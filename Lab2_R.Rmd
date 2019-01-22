@@ -1,0 +1,61 @@
+---
+title: "Lab 2"
+author: "Kevin Cabrera"
+date: "1/17/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+stringr
+```
+
+1. How do you ask if a file exists?
+```{r}
+file.exists("DevCellBakeOff_Flyer.docx")
+```
+
+2. How to you ask if a file is a directory?
+```{r}
+file_test("-d", "Desktop/")
+file_test("-d", "DevCellBakeOff_Flyer.docx")
+```
+
+3. How do you remove (delete) a file?
+```{r}
+file.remove("test.rtf")
+```
+
+4. How do you get the size of a file?
+```{r}
+file.size("DevCellBakeOff_Flyer.pdf")
+```
+
+5. How do you get all the file names matching a pattern?
+```{r}
+list.files(path = "/Users/cabweebwub/Desktop/", pattern = "Dev")
+```
+
+6. How do you get all the file names matching a pattern recursively?
+```{r}
+list.files(path = "/Users/cabweebwub/Desktop/", pattern = "Dev", recursive = TRUE)
+```
+
+8. How do you open gzip-compressed files for reading and for writing?
+```{r}
+unzip("/Users/cabweebwub/Desktop/lab2data.tar.gz")
+```
+
+```{r}
+inputs <- list.files(path = "/Users/cabweebwub/Desktop/Lab2/lab2data/data/")
+outputs <- list.files(path = "/Users/cabweebwub/Desktop/Lab2/lab2data/output/")
+input_files <- data_frame("input"=inputs) 
+output_files <- data_frame("output"=outputs) 
+output_files <- gsub(".outfile","datafile",output_files)
+output_files <- gsub(".out",".txt",output_files)
+match(output_files,input_files)
+```
+
