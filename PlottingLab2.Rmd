@@ -1,0 +1,124 @@
+---
+title: "Plotting Lab 2"
+author: "Kevin Cabrera"
+date: "1/29/2019"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(ggplot2)
+plot.diamonds <- ggplot(diamonds, aes(clarity, fill = cut)) + geom_bar() +
+  theme(axis.text.x = element_text(angle=70, vjust=0.5))
+plot.diamonds
+```
+
+```{r}
+ggsave("diamonds.tif",device="tiff", dpi = 600)
+```
+
+```{r}
+library(ggpubr)
+ggpubr::ggarrange(plot.diamonds, 
+          ggarrange(plot.diamonds, plot.diamonds, nrow = 2),
+          ncol = 2)
+```
+What is the key function?
+> ggarrange
+
+How do you flip the column/row layout?
+> flip the order you put your inputs in
+
+```{r}
+ggpubr::ggarrange(ggarrange(plot.diamonds, plot.diamonds, nrow = 2), 
+          plot.diamonds,
+          ncol = 2)
+```
+
+Can you do this with the egg package? (I couldn’t!)
+```{r}
+library(egg)
+grid.arrange(grobs = list(plot.diamonds,plot.diamonds,plot.diamonds), 
+             layout_matrix = cbind(c(1),c(2,3)))
+```
+Is there something weird about these two packages?
+> Yes, they both use the same 'ggarrange' function which means that if you want to use one pulling from a specific package you have to specify which one.
+
+
+# Using R on the Command Line
+```{r}
+readr::write_delim(diamonds, path = "/Users/cabweebwub/Desktop/EE283/diamonds")
+```
+
+##Makes plot with ordered inputs on the command line##
+```{r}
+library(ggplot2)
+library(readr)
+library(dplyr)
+
+x = commandArgs(trailing = T)
+
+infile = x[1]
+outfile = x[2]
+
+y =read_delim(infile, delim = " ") 
+  plot.diamonds <- ggplot(y, aes(clarity, fill = cut)) + geom_bar() +
+  theme(axis.text.x = element_text(angle=70, vjust=0.5))
+ggsave(outfile, plot = plot.diamonds, device = "pdf")
+
+```
+##Command to run the script on the command line
+## > Rscript make_plot.R diamonds test1
+
+
+##Runs R script with explicitly defined inputs on the command line##
+```{r}
+library(ggplot2)
+library(readr)
+library(dplyr)
+library(optparse)
+
+option_list <- list(
+make_option(c("-i", "--infile"), action="store", dest = "infile", type = "character"),
+make_option(c("-o", "--outfile"), action="store", dest = "outfile", type = "character")
+)
+
+opt <- parse_args(OptionParser(option_list=option_list))
+
+y =read_delim(opt$infile, delim = " ") 
+plot.diamonds <- ggplot(y, aes(clarity, fill = cut)) + geom_bar() +
+  theme(axis.text.x = element_text(angle=70, vjust=0.5))
+ggsave(opt$outfile, plot = plot.diamonds, device = "pdf")
+
+```
+
+
+```{r}
+library(reticulate)
+use_python("/Users/cabweebwub/anaconda3/bin/python3")
+```
+
+```{r}
+pd <- import("pandas", convert=F)
+x = data.frame(x=rnorm(100),y=rnorm(100))
+y = pd$DataFrame(r_to_py(x))
+z = py_to_r(y$describe())
+print(z)
+```
+
+```{python}
+import pandas as pd
+x = pd.read_csv("data2.txt",sep=" ")
+```
+
+```{r}
+py$x
+```
+
+## This reticulate stuff isn't really working for me??
+
