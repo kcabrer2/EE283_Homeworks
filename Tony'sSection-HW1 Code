@@ -1,0 +1,20 @@
+### Code to change ATAC-seq filenames. It creates a symlink where the name = ATAC_barcode_ForR.fq.gz ###
+for i in $(ls *.gz); do echo ATAC_$(echo $i | cut -f5,6 -d"_") | xargs ln -s $i; done
+
+### I also tried to work out how to change the Barcode to useful info about the sample, but only was able to make the new dictionary ###
+### To make the new dictionary I had to delete the last two lines of the ATAC README file and change some stuff from the base script ###
+newDict = {}
+f = open('README.ATACseq.txt', 'r')
+for line in f:
+	splitLine = line.split()
+	newDict[(splitLine[1])] = "_".join(splitLine[2:])
+newDict
+f.close()
+
+### For the DNA-seq files I was able to convert them from SOLEXA files to modern Illumina-like files###
+### I installed seqtk into my folder in user_contributed_software and ran it on unzipped files ###
+/data/apps/user_contributed_software/kcabrer2/seqtk/seqtk seq -Q64 -V  ADL06_1_1.fq | gzip -c > new_ADL06_1_1.fq.gz
+
+### Then I did fastqc (I included one of those FastQC files) ###
+module load fastqc/0.11.2
+fastqc new_ADL06_1_1.fq.gz
